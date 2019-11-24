@@ -5,6 +5,6 @@ namespace GroceryStore.Shopping.Interfaces
     public interface IShoppingCart
     {
         decimal GetPrice(string item);
-        decimal Checkout(List<string> items);
+        decimal Checkout(Dictionary<string, int> items);
     }
 }

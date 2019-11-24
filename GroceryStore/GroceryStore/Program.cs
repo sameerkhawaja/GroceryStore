@@ -2,6 +2,7 @@
 using GroceryStore.Shopping.StringConstants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GroceryStore
 {
@@ -20,9 +21,12 @@ namespace GroceryStore
                 StoreInventoryConstants.Apple
             };
 
-            var subtotal = shoppingCart.Checkout(items);
-            Console.WriteLine($"Your subtotal is \u00A3{subtotal}");
+            var itemsGrouped = items.GroupBy(x => x).
+                Select(x => new { Items = x.Key, Count = x.Count() });
+            var itemsDictionary = itemsGrouped.ToDictionary(x => x.Items, x => x.Count);
 
+            var subtotal = shoppingCart.Checkout(itemsDictionary);
+            Console.WriteLine($"Your subtotal is \u00A3{subtotal}");
         }
     }
 }
