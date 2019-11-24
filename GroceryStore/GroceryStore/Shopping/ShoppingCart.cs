@@ -20,21 +20,25 @@ namespace GroceryStore.Shopping
             return storeInventorySystem.GetPrice(item);
         }
 
-        public decimal Checkout(List<string> items)
+        public decimal Checkout(Dictionary<string, int> items)
         {
-            if(items == null)
+            if (items == null)
             {
                 return 0;
             }
 
             var subtotal = 0m;
-            foreach(string item in items)
+
+            foreach (KeyValuePair<string, int> item in items)
             {
-                subtotal += GetPrice(item);
+                for (int i = 0; i < item.Value; i++)
+                {
+                    subtotal += GetPrice(item.Key);
+                }
             }
             return subtotal;
         }
 
-        
+
     }
 }

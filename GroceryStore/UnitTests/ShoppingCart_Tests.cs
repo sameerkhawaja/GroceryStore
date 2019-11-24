@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -55,7 +56,7 @@ namespace UnitTests
             mockStoreInventorySystem.Setup(x => x.GetPrice(It.IsAny<string>())).Returns(It.IsAny<decimal>());
             var shoppingCart = new ShoppingCart(mockStoreInventorySystem.Object);
 
-            var items = new List<string>();
+            var items = new Dictionary<string, int>();
             var subtotal = shoppingCart.Checkout(items);
 
             Assert.AreEqual(0m, subtotal);
@@ -78,10 +79,11 @@ namespace UnitTests
 
             var shoppingCart = new ShoppingCart(mockStoreInventorySystem.Object);
 
-            var items = new List<string>
+            var items = new Dictionary<string, int>
             {
-                StoreInventoryConstants.Apple,
+                { StoreInventoryConstants.Apple, 1 }
             };
+
 
             var price = shoppingCart.Checkout(items);
             Assert.AreEqual(1.50m, price);
@@ -95,16 +97,16 @@ namespace UnitTests
 
             var shoppingCart = new ShoppingCart(mockStoreInventorySystem.Object);
 
-            var items = new List<string>
+            var items = new Dictionary<string, int>
             {
-                StoreInventoryConstants.Apple,
-                StoreInventoryConstants.Apple,
-                StoreInventoryConstants.Orange,
-                StoreInventoryConstants.Apple
+                { StoreInventoryConstants.Apple, 3 },
+                { StoreInventoryConstants.Orange, 1 },
             };
 
             var price = shoppingCart.Checkout(items);
-            mockStoreInventorySystem.Verify(x => x.GetPrice(It.IsAny<string>()), Times.Exactly(items.Count));
+
+            var numberOfItems = items.Sum(x => x.Value);
+            mockStoreInventorySystem.Verify(x => x.GetPrice(It.IsAny<string>()), Times.Exactly(numberOfItems));
             Assert.AreEqual(6.72m, price);
         }
 
