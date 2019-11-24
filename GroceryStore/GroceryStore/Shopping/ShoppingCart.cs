@@ -36,32 +36,18 @@ namespace GroceryStore.Shopping
             return subtotal;
         }
 
-        private decimal CalculatePricing(KeyValuePair<string, int> item)
+        public decimal CalculatePricing(KeyValuePair<string, int> item)
         {
-            var price = GetPrice(item.Key);
+            var price = storeInventorySystem.GetPrice(item.Key);
+            var offer = new Offer(storeInventorySystem);
 
-            if (item.Key == StoreInventoryConstants.Apple)
-            {
-                var numberOfFullPricedItems = item.Value % 2;
-                var numberOfTimesOfferApplied = item.Value / 2;
+            var pricingStrategy = offer.GetPricingStrategy(item.Key);
 
-                decimal subtotal = (price * numberOfFullPricedItems) + (price * numberOfTimesOfferApplied);
+            var x = pricingStrategy.Item1;
+            var y = pricingStrategy.Item2;
 
-                return subtotal;
-            }
-            else if (item.Key == StoreInventoryConstants.Orange)
-            {
-                var numberOfFullPricedItems = item.Value % 3;
-                var numberOfTimesOfferApplied = item.Value / 3;
-
-                decimal subtotal = (price * numberOfFullPricedItems) + (price * numberOfTimesOfferApplied * 2);
-
-                return subtotal;
-            }
-            else
-            {
-                return price * item.Value;
-            }
+            return offer.XForThePriceOfYCalculator(x, y, price, item.Value);
         }
+
     }
 }

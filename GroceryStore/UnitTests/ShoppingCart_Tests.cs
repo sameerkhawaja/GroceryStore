@@ -129,6 +129,6 @@ namespace UnitTests
             Assert.AreEqual(12m, price);
         }
 
-
+        
     }
 }
