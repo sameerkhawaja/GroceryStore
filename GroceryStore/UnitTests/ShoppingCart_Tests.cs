@@ -105,9 +105,28 @@ namespace UnitTests
 
             var price = shoppingCart.Checkout(items);
 
-            var numberOfItems = items.Sum(x => x.Value);
-            mockStoreInventorySystem.Verify(x => x.GetPrice(It.IsAny<string>()), Times.Exactly(numberOfItems));
-            Assert.AreEqual(6.72m, price);
+            mockStoreInventorySystem.Verify(x => x.GetPrice(It.IsAny<string>()), Times.Exactly(items.Count));
+            Assert.AreEqual(5.22m, price);
+        }
+
+        [TestMethod]
+        public void Checkout_When_ThereAreManyItems_ShouldApplyOffers()
+        {
+            mockStoreInventorySystem.Setup(x => x.GetPrice("Apple")).Returns(1m);
+            mockStoreInventorySystem.Setup(x => x.GetPrice("Orange")).Returns(1m);
+
+            var shoppingCart = new ShoppingCart(mockStoreInventorySystem.Object);
+
+            var items = new Dictionary<string, int>
+            {
+                { StoreInventoryConstants.Apple, 9 },
+                { StoreInventoryConstants.Orange, 10 },
+            };
+
+            var price = shoppingCart.Checkout(items);
+
+            mockStoreInventorySystem.Verify(x => x.GetPrice(It.IsAny<string>()), Times.Exactly(items.Count));
+            Assert.AreEqual(12m, price);
         }
 
 

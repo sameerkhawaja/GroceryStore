@@ -31,14 +31,37 @@ namespace GroceryStore.Shopping
 
             foreach (KeyValuePair<string, int> item in items)
             {
-                for (int i = 0; i < item.Value; i++)
-                {
-                    subtotal += GetPrice(item.Key);
-                }
+                subtotal += CalculatePricing(item);
             }
             return subtotal;
         }
 
+        private decimal CalculatePricing(KeyValuePair<string, int> item)
+        {
+            var price = GetPrice(item.Key);
 
+            if (item.Key == StoreInventoryConstants.Apple)
+            {
+                var numberOfFullPricedItems = item.Value % 2;
+                var numberOfTimesOfferApplied = item.Value / 2;
+
+                decimal subtotal = (price * numberOfFullPricedItems) + (price * numberOfTimesOfferApplied);
+
+                return subtotal;
+            }
+            else if (item.Key == StoreInventoryConstants.Orange)
+            {
+                var numberOfFullPricedItems = item.Value % 3;
+                var numberOfTimesOfferApplied = item.Value / 3;
+
+                decimal subtotal = (price * numberOfFullPricedItems) + (price * numberOfTimesOfferApplied * 2);
+
+                return subtotal;
+            }
+            else
+            {
+                return price * item.Value;
+            }
+        }
     }
 }
